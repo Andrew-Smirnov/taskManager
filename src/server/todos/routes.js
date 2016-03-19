@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var Item = require('../db/db').Item;
+var Item = require('../db/item').Item;
 var express = require('express');
 var router = express.Router();
 
@@ -16,30 +16,19 @@ router.post('/', function(req, res) {
     item.save(function(err) {
         if (err) { console.log(err); }
 
-        res.send('ToDo saved!');
+        res.send('Item saved!');
     });
 });
 
 router.put('/:id', function(req, res) {
 	var id = req.params.id;
-	if(req.body.task != undefined) {
-		Item.update({ _id: mongoose.Types.ObjectId(id) }, {
-			$set: { task: req.body.task }
-		}, function(err) {
-			if(err) { console.log(err); }
+	Item.update({ _id: mongoose.Types.ObjectId(id) }, {
+		$set: { task: req.body.task }
+	}, function(err) {
+		if(err) { console.log(err); }
 
-			res.send('Item updated!');
-		})
-	}
-	else {
-		Item.update({ _id: mongoose.Types.ObjectId(id) }, {
-			$push: { subItems: req.body }
-		}, function(err) {
-			if(err) { console.log(err); }
-
-			res.send('Task added!');
-		})
-	}
+		res.send('Item updated!');
+	})
 })
 
 router.delete('/:id', function(req, res) {
