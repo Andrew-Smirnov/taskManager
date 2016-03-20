@@ -1,96 +1,42 @@
-export default function($scope, todoFactory, $http, $q) {
+import _ from 'lodash';
 
-/*	$scope.getItems = () => {
-		$http.get('/todos').success(response => {
-			$scope.todos = response.todos;
-		});
-	};*/
+export default function($scope, $http, $q, itemFactory, taskFactory) {
 
-  	var getItems = function() {
-	    return $http.get('/todos').then(function(response) {    
-	    	return response.data;
-	    });
-  	};
+	const { getItemsSynchronously, getItems, onItemClick, createItem, editItem, deleteItem } = itemFactory;
+	const { getTasks, createTask, editTask, deleteTask } = taskFactory;
 
-	$scope.getItems = () => {
-		$http.get('/todos').success(response => {
-			$scope.todos = response.todos;
-		});
+  	$scope.getItemsSynchronously = _.partial(getItemsSynchronously, $scope);
+  	$scope.getItems     = _.partial(getItems, $scope);
+  	$scope.onItemClick  = _.partial(onItemClick, $scope);
+  	$scope.createItem   = _.partial(createItem, $scope);
+  	$scope.editItem     = _.partial(editItem, $scope);
+  	$scope.deleteItem   = _.partial(deleteItem, $scope);
+
+  	$scope.getTasks   = _.partial(getTasks, $scope);
+  	$scope.createTask = _.partial(createTask, $scope);
+  	$scope.editTask   = _.partial(editTask, $scope);
+  	$scope.deleteTask = _.partial(deleteTask, $scope);
+
+
+
+	$scope.onCompletedClick = task => {
+		task.isCompleted = !task.isCompleted;
 	};
-
-
-	var getTasks = function() {
-	    return $http.get(`/tasks/${$scope.activeItem._id}`).then(function(response) {    
-	    	return response.data;
-	    });
-  	};
-
-/*	$scope.getTasks = () => {
-		$http.get(`/tasks/${$scope.activeItem._id}`)).success(response => {
-			$scope.todos[$scope.todos.indexOf($scope.activeItem)] = response;
-		});
-	};*/
-
-
-
-	$scope.onCompletedClick = subTask => {
-		subTask.isCompleted = !subTask.isCompleted;
-	}
-
-	$scope.onItemClick = item => {
-		$scope.activeItem = item;
-		var activeItemPos = $scope.todos.indexOf($scope.activeItem);
-
-		getTasks().then(function(data) {
-			$scope.todos[activeItemPos].subItems = data;
-	 	}, function() {
-		    console.log('unable to get the tasks');
-		  }
-		);
-	}
 
 	$scope.onCreateNewItemClick = () => {
 		$scope.isCreatingNewItem = true;
 		$scope.newItemName = '';
-	}
+	};
 
 
-	$scope.onAddNewItemClick = () => {
+	$scope.onSaveItemClick = () => {
 		if(!$scope.newItemName) { return }
 
 		if($scope.isCreatingNewItem) {															//createItem
-	        $http.post('/todos', {
-	            task: $scope.newItemName
-	        })
-	        .success(response => {
-
-	        	getItems().then(function(data) {
-			    	$scope.todos = data.todos;
-			    	$scope.activeItem = $scope.todos[$scope.todos.length - 1];
-			 	}, function() {
-				    console.log('unable to get the items');
-				  }
-				);
-
-	            console.log(response);
-	        });
+	        $scope.createItem();
 	    }
 	    else {																					//updateItem
-	    	var activeItemPos = $scope.todos.indexOf($scope.activeItem);
-
-	    	$http.put(`/todos/${$scope.activeItem._id}`, { task: $scope.newItemName })
-	    	.success(response => {
-
-	    		getItems().then(function(data) {
-			    	$scope.todos = data.todos;
-			    	$scope.activeItem = $scope.todos[activeItemPos];
-			 	}, function() {
-				    console.log('unable to get the items');
-				  }
-				);
-
-				console.log(response);
-	    	});
+	    	$scope.editItem();
 	    }
 
         jQuery.noConflict();
@@ -98,33 +44,12 @@ export default function($scope, todoFactory, $http, $q) {
 	        $('#newItemModal').modal('hide');
 	    }
 	    )(jQuery);
-	}
+	};
 
 	$scope.onEditItemClick = item => {
 		$scope.isCreatingNewItem = false;
 		$scope.newItemName = item.task;
-	}
-
-	$scope.onDeleteItemClick = item => {
-
-		for (var i = 0; i < item.subItems.length; i++) {					//Delete all sub tasks
-			$http.delete(`/tasks/${item.subItems[i]._id}`)
-			.success(response => {
-				console.log(response);
-	    	})
-		}
-
-		$http.delete(`/todos/${item._id}`)									//Delete item
-		.success(response => {			
-			$scope.getItems();
-			$scope.activeItem = undefined;
-			console.log(response);
-		});
-	}
-
-
-
-
+	};
 
 
 
@@ -132,78 +57,33 @@ export default function($scope, todoFactory, $http, $q) {
 		$scope.isAddingNewTask = true;
 		$scope.taskName = '';
 		$scope.description = '';
-	}
+	};
 
-	$scope.onSaveNewTaskClick = () => {
-		
-		var activeItemPos = $scope.todos.indexOf($scope.activeItem);
-		var newObj = {};
-		newObj.taskName = $scope.taskName;
-		newObj.description = $scope.description;
-		newObj.isCompleted = false;
-		newObj.item_Id = $scope.activeItem._id;
+	$scope.onSaveTaskClick = () => {
+		if(!$scope.taskName) { return }
+		var newTask = {};
+		newTask.taskName = $scope.taskName;
+		newTask.description = $scope.description;
+		newTask.isCompleted = false;
+		newTask.item_Id = $scope.activeItem._id;
 
 		if($scope.isAddingNewTask) {
-
-			$http.post('/tasks', newObj)								//addNewTask
-			.success(response => {
-
-	    		getTasks().then(function(data) {
-			    	$scope.todos[activeItemPos].subItems = data;
-			 	}, function() {
-				    console.log('unable to get the items');
-				  }
-				);
-
-				console.log(response);
-    		})
-
+			$scope.createTask(newTask);
 		}
 		else {
-
-			$http.put(`/tasks/${$scope.subTask._id}`, newObj)
-			.success(response => {
-
-	    		getTasks().then(function(data) {
-			    	$scope.todos[activeItemPos].subItems = data;
-			 	}, function() {
-				    console.log('unable to get the items');
-				  }
-				);
-
-				console.log(response);
-    		})
-			
+			$scope.editTask(newTask);
 		}
-		$scope.taskName = '';
-		$scope.description = '';
 	}
 
-	$scope.onEditClick = subTask => {
+	$scope.onEditClick = task => {
 		$scope.isAddingNewTask = false;
 
-		$scope.taskName = subTask.taskName;
-		$scope.description = subTask.description;
-		$scope.subTask = subTask;
+		$scope.taskName = task.taskName;
+		$scope.description = task.description;
+		$scope.editingTask = task;
 	}
-
-	$scope.onDeleteClick = (subTask) => {
-		var activeItemPos = $scope.todos.indexOf($scope.activeItem);
-
-		$http.delete(`/tasks/${subTask._id}`)
-		.success(response => {
-			getTasks().then(function(data) {
-		    	$scope.todos[activeItemPos].subItems = data;
-		 	}, function() {
-			    console.log('unable to get the items');
-			  }
-			);
-
-			console.log(response);
-    	})
-	}
-
 
 
 	$scope.getItems();
+
 }

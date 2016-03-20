@@ -17,6 +17,7 @@
     "express": "^4.13.4",
     "jquery": "^2.2.1",
     "kerberos": "0.0.19",
+    "lodash": "^4.6.1",
     "mongoose": "^4.4.6"
   },
   "devDependencies": {

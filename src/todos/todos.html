@@ -1,46 +1,47 @@
 <div class="container-fluid todos-list__container">
-	<div class="panel panel-primary todos-list__panel col-xs-6 col-md-4">
-  		<div class="panel-heading">
-    		<h2 class="panel-title">List of Items</h2>
-    		<button type="button" class="btn btn-default" aria-label="Left Align"
-    				data-toggle="modal" data-target="#newItemModal"
-    				ng-click="onCreateNewItemClick()">
-  				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-  				Create a new List
-			</button>
-  		</div>
-	  	<div class="panel-body">
-	    	<ul class="lists-collection nav nav-pills nav-stacked">
-	    		<li role="presentation"
-		    		ng-repeat="item in todos"
-		    		ng-click="onItemClick(item)">
-	    			<a href="#"
-	    			   ng-class="{'todos-list__active-item': item == activeItem}">
-	    				{{item.task}}
-	    				<span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="onDeleteItemClick(item)"></span>
-	    				<span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="modal"
-	    					data-target="#newItemModal" ng-click="onEditItemClick(item)">
-	    				</span>
-	    			</a>
-	    		</li>
-	    	</ul>
-	  	</div>
-	</div>
+<!-- 	<div class="row"> -->
+		<div class="panel panel-primary todos-list__panel col-sm-6 col-md-4">
+	  		<div class="panel-heading">
+	    		<h2 class="panel-title">List of Items</h2>
+	    		<button type="button" class="btn btn-default" aria-label="Left Align"
+	    				data-toggle="modal" data-target="#newItemModal"
+	    				ng-click="onCreateNewItemClick()">
+	  				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	  				Create a new List
+				</button>
+	  		</div>
+		  	<div class="panel-body">
+		    	<ul class="lists-collection nav nav-pills nav-stacked">
+		    		<li role="presentation"
+			    		ng-repeat="item in todos"
+			    		ng-click="onItemClick(item)">
+		    			<a href="#"
+		    			   ng-class="{'todos-list__active-item': item == activeItem}">
+		    				{{item.task}}
+		    				<span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="deleteItem(item)"></span>
+		    				<span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="modal"
+		    					data-target="#newItemModal" ng-click="onEditItemClick(item)">
+		    				</span>
+		    			</a>
+		    		</li>
+		    	</ul>
+		  	</div>
+		</div>
 
-	<!-- Right column -->
+		<!-- Right column -->
 
-	<div class="testDiv">
-		<div class="panel panel-default col-xs-12 col-sm-6 col-md-8">
+		<div class="panel panel-default  col-sm-6 col-md-8">
 			<div class="panel-body">
 				<h3 class="todos-item__task-name">{{activeItem.task}}</h3>
 				<button class="btn btn-success todos-list__add-new-task-btn"
 					data-toggle="modal" data-target="#newTaskModal"
-					ng-click="onAddNewTaskClick()">
+					ng-click="onAddNewTaskClick()"
+					ng-if="activeItem">
 					Add new Task
 				</button>
 			</div>
 		</div>
-		<div class="panel panel-info col-xs-12 col-sm-6 col-md-8"
+		<div class="panel panel-info col-sm-6 col-md-8"
 			ng-repeat="task in activeItem.subItems">
 	  		<div class="panel-heading">
 	  			<input type="checkbox" class=""
@@ -61,7 +62,7 @@
 					ng-click="onEditClick(task)">
 					Edit
 				</button>
-				<button class="btn btn-danger" ng-click="onDeleteClick(task)">
+				<button class="btn btn-danger" ng-click="deleteTask(task)">
 					Delete
 				</button>
 				<div class="collapse" id="{{task.taskName}}">
@@ -71,11 +72,11 @@
 				</div>
 			</div>
 		</div>
-	</div>
+<!-- 	</div> -->
 </div>
 
 		<!-- newItemModal Form -->
-<form ng-submit="onAddNewItemClick()">
+<form ng-submit="onSaveItemClick()">
 	<div class="modal fade" id="newItemModal" tabindex="-1" role="dialog" aria-labelledby="newItemModalLabel">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
@@ -125,7 +126,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal"
-	        ng-click="onSaveNewTaskClick()" >
+	        ng-click="onSaveTaskClick()" >
 	        Save Task
 	    </button>
       </div>
