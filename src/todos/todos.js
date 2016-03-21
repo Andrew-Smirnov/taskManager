@@ -21,6 +21,8 @@ export default function($scope, $http, $q, itemFactory, taskFactory) {
 
 	$scope.onCompletedClick = task => {
 		task.isCompleted = !task.isCompleted;
+		$scope.editingTask = task;
+		$scope.editTask(task);
 	};
 
 	$scope.onCreateNewItemClick = () => {
@@ -64,7 +66,7 @@ export default function($scope, $http, $q, itemFactory, taskFactory) {
 		var newTask = {};
 		newTask.taskName = $scope.taskName;
 		newTask.description = $scope.description;
-		newTask.isCompleted = false;
+		newTask.isCompleted = $scope.isCompleted;
 		newTask.item_Id = $scope.activeItem._id;
 
 		if($scope.isAddingNewTask) {

@@ -104,3 +104,16 @@
     background-color: #337ab7;
     border-color: #337ab7;
 }
+
+.nav > li > a:hover:not(.todos-list__active-item){
+	text-decoration: none;
+    background-color: #eeeeee;
+	color: #23527c;
+}
+
+.nav > li > a:hover{
+	text-decoration: none;
+	color: #fff;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}

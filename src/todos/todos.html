@@ -53,8 +53,8 @@
 	  		</div>
 		  	<div class="panel-body">
 		    	<button class="btn btn-primary" type="button"
-		    		data-toggle="collapse" data-target="#{{task.taskName}}"
-		    		aria-expanded="false" aria-controls="{{task.taskName}}">
+		    		data-toggle="collapse" data-target="#{{task._id}}"
+		    		aria-expanded="false" aria-controls="{{task._id}}">
 		  			Show Description
 				</button>
 				<button class="btn btn-warning" data-toggle="modal"
@@ -65,7 +65,7 @@
 				<button class="btn btn-danger" ng-click="deleteTask(task)">
 					Delete
 				</button>
-				<div class="collapse" id="{{task.taskName}}">
+				<div class="collapse" id="{{task._id}}">
 			  		<div class="well">
 			    		{{task.description}}
 			  		</div>
