@@ -1,28 +1,21 @@
 .todos-list	{
 	&__container {
-		border: 1px solid transparent;
-	    border-radius: 4px;
-	    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-	    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-	    border-color: #337ab7;
-	    margin-left: 15px;
-	    margin-right: 15px;
-	    /*margin-top: 25px;*/
+		border-top: 1px solid #337ab7;
+		border-bottom: 1px solid #337ab7;
 	    border-top-left-radius: 8px;
 	    padding: 0;
 	    min-height: 100vh;
 	}
 
-	&__container .panel-info {
+/*	&__container .panel-info {
 		padding: 10px 0;
 		border-top: none;
-	}
+	}*/
 
 	&__panel {
 		border: none;
     	border-right: 3px solid #337ab7;
     	border-radius: 0;
-    	margin: 0;
     	padding: 0;
     	min-height: 100vh;
 	}
@@ -74,26 +67,92 @@
 }
 
 
-.todos-item {
+.task {
+
+	&__add-new-task-btn {
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 80px;
+		font-size: 18px;
+	}
+
+	&__add-new-task-btn .glyphicon-plus{
+		display: block;
+	}
 
 	&__task-name {
-		display: inline-block;
-	    font-size: 21px;
+	    font-size: 24px;
 	    font-weight: bold;
-	    padding-left: 12px;
+	}
+
+	&__panel-default {
+		position: relative;
+		height: 81px;
+		border-right-width: 0;
+	    border-left-width: 0;
+	    border-top-width: 0;
+	    border-radius: 0;
+	    margin-bottom: 15px
+	}
+
+	&__panel-default .panel-body {
+		padding-top: 0;
+		text-align: center;
+	}
+
+	&__panel-info {
+		padding: 0;
+		border-top: none;
+		border-right-width: 0px;
+    	border-left-width: 0px;
+	}
+
+	&__panel-info h3 {
+    	font-size: 21px;
+    	display: inline-block;
+    	padding-left: 12px;
+    	font-weight: bold;
+	}
+
+	&__panel-info input[type="checkbox"] {
+		height: 18px;
+    	width: 18px;
+    	cursor: pointer;
+	}
+
+	&__panel-info .glyphicon-trash, &__panel-info .glyphicon-pencil {
+		font-size: 24px;
+    	cursor: pointer;
+	}
+
+	&__panel-info .glyphicon-trash {
+		float: right;
+		margin-right: 30px;
+	}
+
+	&__panel-info .glyphicon-pencil {
+		margin-left: 20px;
+	}
+
+	&__panel-info .glyphicon-trash:hover {
+		color: brown;
+	}
+
+	&__panel-info .glyphicon-pencil:hover {
+		color: #F4C732;
 	}
 	
 }
 
-.panel-default {
-	height: 81px;
-	border-radius: 0;
+.well {
+	margin-top: 15px;
 }
 
-.active-item {
+/*.active-item {
 	text-decoration: none;
     background-color: #eeeeee;
-}
+}*/
 
 
 
@@ -117,3 +176,19 @@
     background-color: #337ab7;
     border-color: #337ab7;
 }
+
+
+/*	.glyphicon-trash, .glyphicon-pencil{
+		float: right;
+		font-size: 24px;
+    	margin-left: 20px;
+    	cursor: pointer;
+	}
+
+	.glyphicon-trash:hover{
+		color: brown;
+	}
+
+	.glyphicon-pencil:hover{
+    	color: #F4C732;
+	}*/

@@ -34,6 +34,10 @@ const taskFactory = angular.module('app.taskFactory', [])
 
     		$scope.getTasks().then(function(data) {
 		    	$scope.todos[activeItemPos].subItems = data;
+		    	if(task.isCompleted)
+		    		$scope.comletedTasksCount++;
+		    	else
+		    		$scope.comletedTasksCount--;
 		 	}, function() {
 			    console.log('unable to get the items');
 			  }

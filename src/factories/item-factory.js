@@ -3,18 +3,27 @@ import angular from 'angular';
 
 const itemFactory = angular.module('app.itemFactory', [])
 
-.factory('itemFactory', ($http) => {
+.factory('itemFactory', ($http, $rootScope) => {
 
 	var getItemsSynchronously = function($scope) {
-	    return $http.get('/todos').then(function(response) {    
+	    return $http.get(`/todos/${sessionStorage.current_user_id}` ).then(function(response) {    
 	    	return response.data;
 	    });
   	};
 
   	var getItems = function($scope) {
-	   $http.get('/todos').success(response => {
+	   $http.get(`/todos/${sessionStorage.current_user_id}` ).success(response => {
 			$scope.todos = response.todos;
 		});
+  	};
+
+  	var getComletedTasksCount = function(item) {
+  		var comletedTasksCount = 0;
+  		for (var i = 0; i < item.subItems.length; i++) {
+  			if (item.subItems[i].hasOwnProperty('isCompleted') && item.subItems[i].isCompleted === true)
+  				comletedTasksCount++;
+  		};
+  		return comletedTasksCount;
   	};
 
   	var onItemClick = function($scope, item) {
@@ -23,15 +32,20 @@ const itemFactory = angular.module('app.itemFactory', [])
 
 		$scope.getTasks().then(function(data) {
 			$scope.todos[activeItemPos].subItems = data;
+			$scope.tasksCount = item.subItems.length;
+			$scope.comletedTasksCount = getComletedTasksCount(item);
 	 	}, function() {
 		    console.log('unable to get the tasks');
 		  }
 		);
   	};
 
+
+
   	var createItem = function($scope) {
 		$http.post('/todos', {
-            task: $scope.newItemName
+            task: $scope.newItemName,
+            user_Id: sessionStorage.current_user_id
         })
         .success(response => {
 

@@ -3,8 +3,9 @@ var Item = require('../db/item').Item;
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res) {
-	Item.find(function(err, results) {
+router.get('/:id', function(req, res) {
+	var id = req.params.id;
+	Item.find({user_Id: mongoose.Types.ObjectId(id)}, function(err, results) {
 		if (err) { console.log(err); }
 
 		res.send({todos: results});

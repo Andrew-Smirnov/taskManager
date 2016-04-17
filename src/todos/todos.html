@@ -30,41 +30,54 @@
 
 		<!-- Right column -->
 
-		<div class="panel panel-default  col-sm-6 col-md-8">
+		<div class="panel panel-default task__panel-default  col-sm-6 col-md-8">
 			<div class="panel-body">
-				<h3 class="todos-item__task-name">{{activeItem.task}}</h3>
-				<button class="btn btn-success todos-list__add-new-task-btn"
+				<span class="task__task-name">{{activeItem.task}}</span>
+				<div class="task__task-name" ng-if="tasksCount">
+					<span>{{comletedTasksCount}} tasks completed out of {{tasksCount}}</span>
+				</div>	
+				<button class="btn btn-success task__add-new-task-btn"
 					data-toggle="modal" data-target="#newTaskModal"
 					ng-click="onAddNewTaskClick()"
 					ng-if="activeItem">
 					Add new Task
+					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				</button>
+
 			</div>
 		</div>
-		<div class="panel panel-info col-sm-6 col-md-8"
+		<div class="panel panel-info task__panel-info col-sm-6 col-md-8"
 			ng-repeat="task in activeItem.subItems">
 	  		<div class="panel-heading">
 	  			<input type="checkbox" class=""
 	  				ng-checked="task.isCompleted" ng-click="onCompletedClick(task)">
-	    		<h3 class="panel-title todos-item__task-name"
+	    		<h3 class="panel-title"
 	    			ng-class="{'todos-list__task--completed': task.isCompleted}">
 	    			{{task.taskName}}
 	    		</h3>
+
+	    		<span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="deleteTask(task)"></span>
+				<span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="modal"
+					data-target="#newTaskModal"
+					ng-click="onEditClick(task)">
+				</span>
+
 	  		</div>
 		  	<div class="panel-body">
 		    	<button class="btn btn-primary" type="button"
 		    		data-toggle="collapse" data-target="#{{task._id}}"
-		    		aria-expanded="false" aria-controls="{{task._id}}">
+		    		aria-expanded="false" aria-controls="{{task._id}}"
+		    		ng-if="task.description">
 		  			Show Description
 				</button>
-				<button class="btn btn-warning" data-toggle="modal"
+				<!-- <button class="btn btn-warning" data-toggle="modal"
 					data-target="#newTaskModal"
 					ng-click="onEditClick(task)">
 					Edit
 				</button>
 				<button class="btn btn-danger" ng-click="deleteTask(task)">
 					Delete
-				</button>
+				</button> -->
 				<div class="collapse" id="{{task._id}}">
 			  		<div class="well">
 			    		{{task.description}}

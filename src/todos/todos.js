@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export default function($scope, $http, $q, itemFactory, taskFactory) {
+export default function($scope, $rootScope, $http, $q, itemFactory, taskFactory) {
 
 	const { getItemsSynchronously, getItems, onItemClick, createItem, editItem, deleteItem } = itemFactory;
 	const { getTasks, createTask, editTask, deleteTask } = taskFactory;
@@ -34,7 +34,7 @@ export default function($scope, $http, $q, itemFactory, taskFactory) {
 	$scope.onSaveItemClick = () => {
 		if(!$scope.newItemName) { return }
 
-		if($scope.isCreatingNewItem) {															//createItem
+		if($scope.isCreatingNewItem) {														//createItem
 	        $scope.createItem();
 	    }
 	    else {																					//updateItem
