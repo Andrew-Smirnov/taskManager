@@ -49,8 +49,10 @@ const taskFactory = angular.module('app.taskFactory', [])
 
   	var deleteTask = function($scope, task) {
   		var activeItemPos = $scope.todos.indexOf($scope.activeItem);
+  		var deleteTaskPos = $scope.todos[activeItemPos].subItems.indexOf(task);		
+		$scope.todos[activeItemPos].subItems.splice(deleteTaskPos, 1);				//remoove from client-side
 
-		$http.delete(`/tasks/${task._id}`)
+		$http.delete(`/tasks/${task._id}`)											//remoove from db
 		.success(response => {
 			$scope.getTasks().then(function(data) {
 		    	$scope.todos[activeItemPos].subItems = data;

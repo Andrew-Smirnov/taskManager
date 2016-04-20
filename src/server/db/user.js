@@ -4,6 +4,7 @@ var User = mongoose.model('User', {
 	username: String,
     password: String,
     email: String,
+    canReceiveItems: Boolean,
     created_at: {type: Date, default: Date.now}
 });
 

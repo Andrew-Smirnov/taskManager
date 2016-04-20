@@ -57,7 +57,7 @@ passport.use('signup', new LocalStrategy({
         },
         function(req, username, password, done, email) {
 // находим в mongo пользователя с указанным именем
-            User.findOne({ 'username' :  username }, function(err, user) {
+            User.findOne({ 'email' :  req.body.email }, function(err, user) {
                 // В случае любой ошибки возвращаемся через метод done
                 if (err){
                     console.log('Error in SignUp: '+ err);
@@ -65,15 +65,16 @@ passport.use('signup', new LocalStrategy({
                 }
                 // уже существует
                 if (user) {
-                    console.log('User already exists with username: '+username);
+                    console.log('User already exists with email: '+req.body.email);
                     return done(null, false);
                 } else {
                     // если пользователя нет – создаем его
                     var newUser = new User();
                     // задаем локальные учетные данные пользователя
-                    newUser.username = username;
-                    newUser.password = createHash(password);
+                    newUser.username = req.body.username;
+                    newUser.password = createHash(req.body.password);
                     newUser.email = req.body.email;
+                    newUser.canReceiveItems = false;
                     // сохраняем пользователя
                     newUser.save(function(err) {
                         if (err){

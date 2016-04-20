@@ -6,13 +6,13 @@ const itemFactory = angular.module('app.itemFactory', [])
 .factory('itemFactory', ($http, $rootScope) => {
 
 	var getItemsSynchronously = function($scope) {
-	    return $http.get(`/todos/${sessionStorage.current_user_id}` ).then(function(response) {    
+	    return $http.get(`/todos/${$rootScope.currentUser._id}` ).then(function(response) {    
 	    	return response.data;
 	    });
   	};
 
   	var getItems = function($scope) {
-	   $http.get(`/todos/${sessionStorage.current_user_id}` ).success(response => {
+	   $http.get(`/todos/${$rootScope.currentUser._id}` ).success(response => {
 			$scope.todos = response.todos;
 		});
   	};
@@ -45,7 +45,7 @@ const itemFactory = angular.module('app.itemFactory', [])
   	var createItem = function($scope) {
 		$http.post('/todos', {
             task: $scope.newItemName,
-            user_Id: sessionStorage.current_user_id
+            user_Id: $rootScope.currentUser._id
         })
         .success(response => {
 
@@ -67,6 +67,7 @@ const itemFactory = angular.module('app.itemFactory', [])
     	$http.put(`/todos/${$scope.activeItem._id}`, { task: $scope.newItemName })
     	.success(response => {
     		$scope.todos[activeItemPos].task = $scope.newItemName;
+    		console.log(response);
 		});
   	};
 

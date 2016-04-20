@@ -13,6 +13,7 @@ router.get('/:id', function(req, res) {
 });
 
 router.post('/', function(req, res) {
+	console.log(req.body);
     var item = new Item(req.body);
     item.save(function(err) {
         if (err) { console.log(err); }

@@ -26,9 +26,6 @@
 		border-top-left-radius: 5px;
 	}
 
-	&__panel .panel-title{
-		margin-bottom: 10px;
-	}
 
 	&__panel .glyphicon-trash, &__panel .glyphicon-pencil{
 		float: right;
@@ -149,12 +146,6 @@
 	margin-top: 15px;
 }
 
-/*.active-item {
-	text-decoration: none;
-    background-color: #eeeeee;
-}*/
-
-
 
 
 .nav > li > a:focus{
@@ -178,17 +169,18 @@
 }
 
 
-/*	.glyphicon-trash, .glyphicon-pencil{
-		float: right;
-		font-size: 24px;
-    	margin-left: 20px;
-    	cursor: pointer;
-	}
+.inbox-panel {
+	cursor: pointer;
+}
 
-	.glyphicon-trash:hover{
-		color: brown;
-	}
+.inbox-panel h4 {
+	margin: 5px 0;
+}
 
-	.glyphicon-pencil:hover{
-    	color: #F4C732;
-	}*/
+.inbox-panel a {
+	text-decoration: none;
+}
+
+.panel-collapse li {
+    padding: 5px 15px;
+}

@@ -4,6 +4,7 @@ import itemFactory from 'factories/item-factory';
 import taskFactory from 'factories/task-factory';
 import todosController from 'todos/todos';
 import authController from 'auth/auth';
+import userProfileController from 'user-profile/user-profile';
 
 const app = angular.module('app', [uiRouter, itemFactory.name, taskFactory.name]);
 
@@ -33,6 +34,19 @@ app.config(($stateProvider, $urlRouterProvider, $locationProvider) => {
                 }
             }
         })
+        .state('userProfile', {
+            url: ('/profile'),
+            views: {
+                "auth-panel": {
+                    template: require('auth/auth-panel.html'),
+                    controller: authController
+                },
+                "user-profile": {
+                    template: require('user-profile/user-profile.html'),
+                    controller: userProfileController
+                }
+            }
+        })
 
     $locationProvider.html5Mode(true);
 
@@ -40,13 +54,15 @@ app.config(($stateProvider, $urlRouterProvider, $locationProvider) => {
 app.run(function($http, $rootScope, $state)
 {
     if(sessionStorage.length > 0) {
-        $rootScope.current_user = sessionStorage.current_user;
+        $rootScope.currentUser = JSON.parse(sessionStorage.currentUser);
         $rootScope.authenticated = true;
+        $rootScope.userName = $rootScope.currentUser.username;            //variable to display name on pages
         $state.go('todos');
     }
     else {
         $rootScope.authenticated = false;
-        $rootScope.current_user = 'Guest';
+        $rootScope.currentUser = 'Guest';
+        $state.go('auth');
     }
 
 });                      

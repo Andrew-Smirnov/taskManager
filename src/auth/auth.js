@@ -12,10 +12,10 @@ export default function($scope, $http, $rootScope, $state) {
             console.log(data);
             if(data.state == 'success'){
                     $rootScope.authenticated = true;
-                    $rootScope.current_user = data.user.username;
-                    $rootScope.sess = data.user;
-                    sessionStorage.setItem('current_user', $rootScope.sess.username);
-                    sessionStorage.setItem('current_user_id', $rootScope.sess._id);
+                    $rootScope.currentUser = data.user;
+                    sessionStorage.setItem('currentUser', JSON.stringify($rootScope.currentUser));
+                    $rootScope.userName = $rootScope.currentUser.username;            //variable to display name on pages
+
                     $state.go('todos');
 
                      jQuery.noConflict();
@@ -28,7 +28,7 @@ export default function($scope, $http, $rootScope, $state) {
             }
             else{
                 $scope.error_message = data.message;
-                $rootScope.sess = null;
+                $rootScope.currentUser = 'Guest';
             }
         });
         
@@ -43,7 +43,12 @@ export default function($scope, $http, $rootScope, $state) {
         $http.post('/auth/signup', newUser).success(function(data){
         if(data.state == 'success'){
                 $rootScope.authenticated = true;
-                $rootScope.current_user = data.user.username;
+                $rootScope.currentUser = data.user.username;
+
+                $rootScope.currentUser = data.user;
+                sessionStorage.setItem('currentUser', JSON.stringify($rootScope.currentUser));
+                $rootScope.userName = $rootScope.currentUser.username;            //variable to display name on pages
+
                 $state.go('todos');
 
                 jQuery.noConflict();
@@ -75,9 +80,13 @@ export default function($scope, $http, $rootScope, $state) {
     $scope.signout = () => {
         $http.get('auth/signout');
         $rootScope.authenticated = false;
-        $rootScope.current_user = 'Guest';
+        $rootScope.currentUser = 'Guest';
         sessionStorage.clear();
         $state.go('auth');
     };
+
+/*    $scope.myProfileClick = () => {
+        $state.go('userProfile');
+    }*/
 
 }
