@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var routes = require('./src/server/routes');
 var bcrypt = require('bcrypt-nodejs');
 var cookieParser = require('cookie-parser'); //для поддержки сеансов
+var flash = require('connect-flash');
 
 
 var passport = require('passport'); //Используем passportjs для аутентификации
@@ -19,6 +20,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 var initPassport = require('./src/server/passport/passport-init');
 initPassport(passport);
+app.use(flash());
 
 
 var PORT = process.env.PORT || 3000;

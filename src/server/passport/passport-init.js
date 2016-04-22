@@ -37,7 +37,7 @@ passport.use('login', new LocalStrategy({
                     // Имя пользователя не существует, логируем ошибку и делаем перенаправление назад
                     if (!user){
                         console.log('User Not Found with username '+username);
-                        return done(null, false);                 
+                        return done(null, false);              
                     }
                     // Пользователь существует, но введен неверный пароль. Логируем ошибку 
                     if (!isValidPassword(user, password)){
@@ -57,17 +57,40 @@ passport.use('signup', new LocalStrategy({
         },
         function(req, username, password, done, email) {
 // находим в mongo пользователя с указанным именем
-            User.findOne({ 'email' :  req.body.email }, function(err, user) {
+            User.find( {$or: [ {'username' : username}, { 'email' : req.body.email }]}, function(err, user) {
                 // В случае любой ошибки возвращаемся через метод done
                 if (err){
                     console.log('Error in SignUp: '+ err);
                     return done(err);
                 }
                 // уже существует
-                if (user) {
-                    console.log('User already exists with email: '+req.body.email);
+                /*if (user) {
+                    if (user.email === req.body.email) {
+                        console.log('User already exists with email: '+req.body.email);
+                        req.flash('incorrectEmail', 'User already exists with email: '+req.body.email);
+                        //return done(null, false);
+                    } if (user.username === username) {
+                        console.log('User already exists with username: '+username);
+                        req.flash('incorrectUsername', 'User already exists with username: '+username);
+                        //return done(null, false);
+                    }
                     return done(null, false);
-                } else {
+                }*/
+                if (user.length >= 2) {
+                    req.flash('incorrectEmail', 'User already exists with email: '+req.body.email);
+                    req.flash('incorrectUsername', 'User already exists with username: '+username);
+                    return done(null, false);
+                } else if (user[0]) {
+                    if (user[0].email === req.body.email) {
+                        console.log('User already exists with email: '+req.body.email);
+                        req.flash('incorrectEmail', 'User already exists with email: '+req.body.email);
+                    } if (user[0].username === username) {
+                        console.log('User already exists with username: '+username);
+                        req.flash('incorrectUsername', 'User already exists with username: '+username);
+                    }
+                    return done(null, false);
+                }
+                else {
                     // если пользователя нет – создаем его
                     var newUser = new User();
                     // задаем локальные учетные данные пользователя

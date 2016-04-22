@@ -35,12 +35,16 @@ export default function($scope, $http, $rootScope, $state) {
 	};
 
     $scope.register = () => {
+        $scope.incorrectUsername = null;
+        $scope.incorrectEmail = null;
+
         var newUser = {};
         newUser.username = $scope.username;
         newUser.password = $scope.password;
         newUser.email = $scope.email;
 
         $http.post('/auth/signup', newUser).success(function(data){
+            console.log(data);
         if(data.state == 'success'){
                 $rootScope.authenticated = true;
                 $rootScope.currentUser = data.user.username;
@@ -58,7 +62,14 @@ export default function($scope, $http, $rootScope, $state) {
                 )(jQuery);
             }
             else{
-                $scope.error_message = data.message;
+                //$scope.error_message = data.message;
+                if(data.incorrectUsername.length > 0) {
+                    $scope.incorrectUsername = data.incorrectUsername[0];
+                }
+                if(data.incorrectEmail.length > 0) {
+                    $scope.incorrectEmail = data.incorrectEmail[0];
+                }
+
             }
         });
     };
@@ -68,6 +79,8 @@ export default function($scope, $http, $rootScope, $state) {
         $scope.username = '';
         $scope.password = '';
         $scope.email = '';
+        $scope.incorrectUsername = null;
+        $scope.incorrectEmail = null;
         $scope.error_message = null;
     }
 

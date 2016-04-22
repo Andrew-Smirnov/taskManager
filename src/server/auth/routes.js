@@ -14,7 +14,9 @@ var session = require('express-session'); // для поддержки сеан�
     });
 // Отправляем состояние неудавшегося входа в систему обратно в представление (angular)
     router.get('/failure',function(req,res){
-		res.send({state: 'failure', user:null, message:"Invalid username or password"});
+		res.send({state: 'failure', user:null,
+        incorrectUsername: req.flash('incorrectUsername'),
+        incorrectEmail: req.flash('incorrectEmail')});
     });
 
     // Запрос входа в систему
@@ -27,7 +29,8 @@ var session = require('express-session'); // для поддержки сеан�
 // Запрос на регистрацию в системе
     router.post('/signup', passport.authenticate('signup', {
         successRedirect: '/auth/success',
-        failureRedirect: '/auth/failure'
+        failureRedirect: '/auth/failure',
+        failureFlash: true
     }));
 
 // Запрос на выход из системы
