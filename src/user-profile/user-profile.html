@@ -1,19 +1,27 @@
-<h2 class="user-profile__header">Hello, {{userName}}! Here you can change your account settings</h2>
+<h2 class="user-profile__header">Hello, {{currentUser.firstName}}! Here you can change your account settings</h2>
 
 <div class="user-profile__wrapper">
 	<form class="form-horizontal" ng-submit="saveChangesClick()">
 	  <div class="form-group">
-	    <label for="inputUsername" class="col-sm-2 control-label">Username</label>
+	    <label for="inputFirstName" class="col-sm-2 control-label">First name</label>
 	    <div class="col-sm-10">
-	      <input type="text" class="form-control" id="inputUsername" ng-model="currentUser.username">
+	      <input type="text" class="form-control" id="inputFirstName" ng-model="firstName">
 	    </div>
 	  </div>
 	  <div class="form-group">
-	    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+	    <label for="inputLogin" class="col-sm-2 control-label">Login</label>
 	    <div class="col-sm-10">
-	      <input type="email" class="form-control" id="inputEmail3" ng-model="currentUser.email">
+	      <input type="text" class="form-control" id="inputLogin" ng-model="username">
 	    </div>
 	  </div>
+	  <div class="alert alert-danger" role="alert" ng-show="incorrectLogin">{{incorrectLogin}}</div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+	    <div class="col-sm-10">
+	      <input type="email" class="form-control" id="inputEmail3" ng-model="email">
+	    </div>
+	  </div>
+	  <div class="alert alert-danger" role="alert" ng-show="incorrectEmail">{{incorrectEmail}}</div>
 	  <!-- <div class="form-group">
 	    <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
 	    <div class="col-sm-10">
@@ -30,13 +38,39 @@
 	      </div>
 	    </div>
 	  </div>
+	  <div class="alert alert-success" role="alert" ng-show="successMessage">{{successMessage}}</div>
 	  <div class="form-group">
 	    <div class="col-sm-offset-2 col-sm-10">
 	      <button class="btn btn-default">Save Changes</button>
+	      <button type="button" data-toggle="modal" data-target="#myModal"
+	              class="btn btn-danger right" style="float: right">
+	              DELETE Profile</button>      
 	    </div>
 	  </div>
+	  
 	</form>
 </div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Deleting profile</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete your profile?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No, thanks</button>
+        <button type="button" class="btn btn-danger" ng-click="deleteProfile()">Yes, Delete my profile</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 
 <!-- <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>

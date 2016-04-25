@@ -4,9 +4,9 @@ var LocalStrategy   = require('passport-local').Strategy;
 var bCrypt = require('bcrypt-nodejs');
 
 
-var passport = require('passport'); //Используем passportjs для аутентификации
-var LocalStrategy = require('passport-local').Strategy; //используем стратегию паспорта
-var session = require('express-session'); // для поддержки сеансов
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var session = require('express-session');
 
 
 module.exports = function(passport){
@@ -28,7 +28,6 @@ passport.use('login', new LocalStrategy({
         },
         function(req, username, password, done) { 
         // Проверяем в mongo, существует ли пользователь с таким именем
-        console.log(username);
             User.findOne({ 'username' :  username }, 
                 function(err, user) {
                     // В случае любой ошибки происходит возврат через метод done 
@@ -46,7 +45,6 @@ passport.use('login', new LocalStrategy({
                     }
                     // Имя пользователя и пароль верны, возвращаем пользователя через метод done
                     // что будет трактоваться как успех
-                    console.log(user);
                     return done(null, user);
                 }
             );
@@ -64,21 +62,9 @@ passport.use('signup', new LocalStrategy({
                     return done(err);
                 }
                 // уже существует
-                /*if (user) {
-                    if (user.email === req.body.email) {
-                        console.log('User already exists with email: '+req.body.email);
-                        req.flash('incorrectEmail', 'User already exists with email: '+req.body.email);
-                        //return done(null, false);
-                    } if (user.username === username) {
-                        console.log('User already exists with username: '+username);
-                        req.flash('incorrectUsername', 'User already exists with username: '+username);
-                        //return done(null, false);
-                    }
-                    return done(null, false);
-                }*/
                 if (user.length >= 2) {
                     req.flash('incorrectEmail', 'User already exists with email: '+req.body.email);
-                    req.flash('incorrectUsername', 'User already exists with username: '+username);
+                    req.flash('incorrectLogin', 'User already exists with username: '+username);
                     return done(null, false);
                 } else if (user[0]) {
                     if (user[0].email === req.body.email) {
@@ -86,7 +72,7 @@ passport.use('signup', new LocalStrategy({
                         req.flash('incorrectEmail', 'User already exists with email: '+req.body.email);
                     } if (user[0].username === username) {
                         console.log('User already exists with username: '+username);
-                        req.flash('incorrectUsername', 'User already exists with username: '+username);
+                        req.flash('incorrectLogin', 'User already exists with username: '+username);
                     }
                     return done(null, false);
                 }
@@ -94,6 +80,7 @@ passport.use('signup', new LocalStrategy({
                     // если пользователя нет – создаем его
                     var newUser = new User();
                     // задаем локальные учетные данные пользователя
+                    newUser.firstName = req.body.firstName;
                     newUser.username = req.body.username;
                     newUser.password = createHash(req.body.password);
                     newUser.email = req.body.email;

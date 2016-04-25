@@ -14,7 +14,7 @@ export default function($scope, $http, $rootScope, $state) {
                     $rootScope.authenticated = true;
                     $rootScope.currentUser = data.user;
                     sessionStorage.setItem('currentUser', JSON.stringify($rootScope.currentUser));
-                    $rootScope.userName = $rootScope.currentUser.username;            //variable to display name on pages
+                    //$rootScope.firstName = $rootScope.currentUser.firstName;            //variable to display name on pages
 
                     $state.go('todos');
 
@@ -35,13 +35,14 @@ export default function($scope, $http, $rootScope, $state) {
 	};
 
     $scope.register = () => {
-        $scope.incorrectUsername = null;
+        $scope.incorrectLogin = null;
         $scope.incorrectEmail = null;
 
         var newUser = {};
         newUser.username = $scope.username;
         newUser.password = $scope.password;
         newUser.email = $scope.email;
+        newUser.firstName = $scope.firstName;
 
         $http.post('/auth/signup', newUser).success(function(data){
             console.log(data);
@@ -51,7 +52,7 @@ export default function($scope, $http, $rootScope, $state) {
 
                 $rootScope.currentUser = data.user;
                 sessionStorage.setItem('currentUser', JSON.stringify($rootScope.currentUser));
-                $rootScope.userName = $rootScope.currentUser.username;            //variable to display name on pages
+                //$rootScope.firstName = $rootScope.currentUser.firstName;            //variable to display name on pages
 
                 $state.go('todos');
 
@@ -62,9 +63,8 @@ export default function($scope, $http, $rootScope, $state) {
                 )(jQuery);
             }
             else{
-                //$scope.error_message = data.message;
-                if(data.incorrectUsername.length > 0) {
-                    $scope.incorrectUsername = data.incorrectUsername[0];
+                if(data.incorrectLogin.length > 0) {
+                    $scope.incorrectLogin = data.incorrectLogin[0];
                 }
                 if(data.incorrectEmail.length > 0) {
                     $scope.incorrectEmail = data.incorrectEmail[0];
@@ -76,10 +76,11 @@ export default function($scope, $http, $rootScope, $state) {
 
 
     $scope.onRegisterClick = () => {
+        $scope.firstName = '';
         $scope.username = '';
         $scope.password = '';
         $scope.email = '';
-        $scope.incorrectUsername = null;
+        $scope.incorrectLogin = null;
         $scope.incorrectEmail = null;
         $scope.error_message = null;
     }

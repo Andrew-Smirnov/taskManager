@@ -15,7 +15,7 @@
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
 		      <ul class="nav navbar-nav navbar-right" ng-if="currentUser!='Guest'">
-            <li><span>Hello, {{userName}}</span></li>
+            <li><span>Hello, {{currentUser.firstName}}</span></li>
             <li>
               <a ui-sref="userProfile">My Profile</a>
             </li>
@@ -50,10 +50,14 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="user-name" class="control-label">Name:</label>
-            <input type="text" class="form-control" id="user-name" ng-model="username">
+            <label for="first-name" class="control-label">First Name:</label>
+            <input type="text" class="form-control" id="first-name" ng-model="firstName">
           </div>
-          <div class="alert alert-danger" role="alert" ng-show="incorrectUsername">{{incorrectUsername}}</div>
+          <div class="form-group">
+            <label for="user-login" class="control-label">Login:</label>
+            <input type="text" class="form-control" id="user-login" ng-model="username">
+          </div>
+          <div class="alert alert-danger" role="alert" ng-show="incorrectLogin">{{incorrectLogin}}</div>
           <div class="form-group">
             <label for="user-password" class="control-label">Password:</label>
             <input type="text" class="form-control" id="user-password" ng-model="password">
