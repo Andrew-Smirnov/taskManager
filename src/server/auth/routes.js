@@ -16,7 +16,8 @@ var session = require('express-session'); // для поддержки сеан�
     router.get('/failure',function(req,res){
 		res.send({state: 'failure', user:null,
         incorrectLogin: req.flash('incorrectLogin'),
-        incorrectEmail: req.flash('incorrectEmail')});
+        incorrectEmail: req.flash('incorrectEmail'),
+        incorrectPassword: req.flash('incorrectPassword')});
     });
 
     // Запрос входа в систему

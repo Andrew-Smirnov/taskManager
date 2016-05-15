@@ -13,7 +13,7 @@ const itemFactory = angular.module('app.itemFactory', [])
 
   	var getItems = function($scope) {
 	   $http.get(`/todos/${$rootScope.currentUser._id}` ).success(response => {
-			$scope.todos = response.todos;
+			$rootScope.todos = response.todos;
 		});
   	};
 
@@ -28,12 +28,13 @@ const itemFactory = angular.module('app.itemFactory', [])
 
   	var onItemClick = function($scope, item) {
   		$scope.activeItem = item;
+  		$scope.sharedItemActive = false;
 		var activeItemPos = $scope.todos.indexOf($scope.activeItem);
 
 		$scope.getTasks().then(function(data) {
 			$scope.todos[activeItemPos].subItems = data;
-			$scope.tasksCount = item.subItems.length;
-			$scope.comletedTasksCount = getComletedTasksCount(item);
+			//$scope.tasksCount = item.subItems.length;
+			//$scope.comletedTasksCount = getComletedTasksCount(item);
 	 	}, function() {
 		    console.log('unable to get the tasks');
 		  }
@@ -45,12 +46,13 @@ const itemFactory = angular.module('app.itemFactory', [])
   	var createItem = function($scope) {
 		$http.post('/todos', {
             task: $scope.newItemName,
+            shared: false,
             user_Id: $rootScope.currentUser._id
         })
         .success(response => {
 
         	getItemsSynchronously().then(function(data) {
-		    	$scope.todos = data.todos;
+		    	$rootScope.todos = data.todos;
 		    	$scope.activeItem = $scope.todos[$scope.todos.length - 1];
 		 	}, function() {
 			    console.log('unable to get the items');
@@ -87,13 +89,29 @@ const itemFactory = angular.module('app.itemFactory', [])
 		});
   	};
 
+  	var deleteUserInfo = function($scope, itemToDelete) {
+		for (var i = 0; i < itemToDelete.subItems.length; i++) {					//Delete all sub tasks
+			$http.delete(`/tasks/${itemToDelete.subItems[i]._id}`)
+			.success(response => {
+				console.log(response);
+	    	})
+		}
+
+		$http.delete(`/todos/${itemToDelete._id}`)									//Delete item
+		.success(response => {			
+			$scope.activeItem = undefined;
+			console.log(response);
+		});
+  	};
+
 	return {
 		getItemsSynchronously,
 		getItems,
 		onItemClick,
 		createItem,
 		editItem,
-		deleteItem
+		deleteItem,
+		deleteUserInfo
 	};
 });
 

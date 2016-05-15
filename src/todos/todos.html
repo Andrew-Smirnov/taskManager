@@ -1,7 +1,8 @@
 <div class="container-fluid todos-list__container">
-<!-- 	<div class="row"> -->
-		<div class="panel panel-primary todos-list__panel col-sm-6 col-md-4">
+	<div class="row">
+		<div class="panel panel-primary todos-list__panel col-sm-6 col-md-5">
 	  		<div class="panel-heading">
+	    		<!-- <h2 class="panel-title" style="margin-bottom: 10px;">List of Items</h2> -->
 	    		<h2 class="panel-title" style="margin-bottom: 10px;">List of Items</h2>
 	    		<button type="button" class="btn btn-default" aria-label="Left Align"
 	    				data-toggle="modal" data-target="#newItemModal"
@@ -20,44 +21,12 @@
                 </h4>
               </div>
               <ul id="collapseFive" class="panel-collapse collapse lists-collection nav nav-pills nav-stacked">
-                <li role="presentation">	
-	    			<a href="#"
-	    			   >
-	    				First
-	    				<span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="deleteItem(item)"></span>
-	    				<span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="modal"
-	    					data-target="#newItemModal" ng-click="onEditItemClick(item)">
-	    				</span>
-	    			</a>
-		    	</li>
-		    	<li role="presentation">	
-	    			<a href="#"
-	    			   >
-	    				Second
-	    				<span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="deleteItem(item)"></span>
-	    				<span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="modal"
-	    					data-target="#newItemModal" ng-click="onEditItemClick(item)">
-	    				</span>
-	    			</a>
-		    	</li>
-		    	<li role="presentation">	
-	    			<a href="#"
-	    			   >
-	    				Third
-	    				<span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="deleteItem(item)"></span>
-	    				<span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="modal"
-	    					data-target="#newItemModal" ng-click="onEditItemClick(item)">
-	    				</span>
-	    			</a>
-		    	</li>
-		    	<li role="presentation">	
-	    			<a href="#"
-	    			   >
-	    				Fourth
-	    				<span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="deleteItem(item)"></span>
-	    				<span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="modal"
-	    					data-target="#newItemModal" ng-click="onEditItemClick(item)">
-	    				</span>
+                <li role="presentation" ng-repeat="sharedItem in sharedItems"
+                                        ng-click="onSharedItemClick(sharedItem)">	
+	    			<a href="#" ng-class="{'todos-list__active-item': sharedItem == activeItem}">
+	    				{{sharedItem.task}}
+	    				<span class="glyphicon glyphicon-trash" aria-hidden="true"
+	    					  ng-click="deleteSharedItem(sharedItem)"></span>
 	    			</a>
 		    	</li>
               </ul>
@@ -72,10 +41,12 @@
 		    			<a href="#"
 		    			   ng-class="{'todos-list__active-item': item == activeItem}">
 		    				{{item.task}}
-		    				<span class="glyphicon glyphicon-share" aria-hidden="true"></span>
-		    				<span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="deleteItem(item)"></span>
+		    				<span class="glyphicon glyphicon-share" aria-hidden="true" data-toggle="modal"
+		    				      data-target="#shareItemModal" ng-click="onShareItemClick()"></span>
+		    				<span class="glyphicon glyphicon-trash" aria-hidden="true"
+		    				      ng-click="deleteItem(item)"></span>
 		    				<span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="modal"
-		    					data-target="#newItemModal" ng-click="onEditItemClick(item)">
+		    					  data-target="#newItemModal" ng-click="onEditItemClick(item)">
 		    				</span>
 		    			</a>
 		    		</li>
@@ -85,7 +56,7 @@
 
 		<!-- Right column -->
 
-		<div class="panel panel-default task__panel-default  col-sm-6 col-md-8">
+		<div class="panel panel-default task__panel-default col-sm-6 col-md-7">
 			<div class="panel-body">
 				<span class="task__task-name">{{activeItem.task}}</span>
 				<div class="task__task-name" ng-if="tasksCount">
@@ -94,17 +65,17 @@
 				<button class="btn btn-success task__add-new-task-btn"
 					data-toggle="modal" data-target="#newTaskModal"
 					ng-click="onAddNewTaskClick()"
-					ng-if="activeItem">
+					ng-if="!sharedItemActive && activeItem">
 					Add new Task
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				</button>
 
 			</div>
 		</div>
-		<div class="panel panel-info task__panel-info col-sm-6 col-md-8"
+		<div class="panel panel-info task__panel-info col-sm-6 col-md-7"
 			ng-repeat="task in activeItem.subItems.slice().reverse()">
 	  		<div class="panel-heading">
-	  			<input type="checkbox" class=""
+	  			<input type="checkbox"
 	  				ng-checked="task.isCompleted" ng-click="onCompletedClick(task)">
 	    		<h3 class="panel-title"
 	    			ng-class="{'todos-list__task--completed': task.isCompleted}">
@@ -114,7 +85,8 @@
 	    		<span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="deleteTask(task)"></span>
 				<span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="modal"
 					data-target="#newTaskModal"
-					ng-click="onEditClick(task)">
+					ng-click="onEditClick(task)"
+					ng-if="!sharedItemActive">
 				</span>
 
 	  		</div>
@@ -125,14 +97,6 @@
 		    		ng-if="task.description">
 		  			Show Description
 				</button>
-				<!-- <button class="btn btn-warning" data-toggle="modal"
-					data-target="#newTaskModal"
-					ng-click="onEditClick(task)">
-					Edit
-				</button>
-				<button class="btn btn-danger" ng-click="deleteTask(task)">
-					Delete
-				</button> -->
 				<div class="collapse" id="{{task._id}}">
 			  		<div class="well">
 			    		{{task.description}}
@@ -140,7 +104,7 @@
 				</div>
 			</div>
 		</div>
-<!-- 	</div> -->
+	</div>
 </div>
 
 		<!-- newItemModal Form -->
@@ -201,6 +165,35 @@
         <button type="button" class="btn btn-primary" data-dismiss="modal"
 	        ng-click="onSaveTaskClick()" >
 	        Save Task
+	    </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+		<!-- shareItemModal -->
+<div class="modal fade" id="shareItemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Share item for other user</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="share-email" class="control-label">Enter a user email:</label>
+            <input type="text" class="form-control" id="share-email" ng-model="shareEmail">
+          </div>
+          <div class="alert alert-danger" role="alert" ng-show="shareError">{{shareError}}</div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success"
+	        ng-click="shareItem()" >
+	        Share Item
 	    </button>
       </div>
     </div>

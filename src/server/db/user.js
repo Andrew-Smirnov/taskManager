@@ -6,6 +6,7 @@ var User = mongoose.model('User', {
     password: String,
     email: String,
     canReceiveItems: Boolean,
+    sharedItems: Array, 
     created_at: {type: Date, default: Date.now}
 });
 

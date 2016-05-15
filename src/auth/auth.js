@@ -1,9 +1,13 @@
 
 export default function($scope, $http, $rootScope, $state) {
 
+    $scope.currentState = $state.current.name;
 	$scope.error_message = '';
 
 	$scope.login = () => {
+        $scope.incorrectLogin = null;
+        $scope.incorrectPassword = null;
+
         var user = {};
         user.username = $scope.username;
         user.password = $scope.password;
@@ -16,6 +20,8 @@ export default function($scope, $http, $rootScope, $state) {
                     sessionStorage.setItem('currentUser', JSON.stringify($rootScope.currentUser));
                     //$rootScope.firstName = $rootScope.currentUser.firstName;            //variable to display name on pages
 
+                    //$rootScope.sharedItems = $rootScope.currentUser.sharedItems;
+
                     $state.go('todos');
 
                      jQuery.noConflict();
@@ -27,7 +33,13 @@ export default function($scope, $http, $rootScope, $state) {
                     $scope.password = '';
             }
             else{
-                $scope.error_message = data.message;
+                if(data.incorrectLogin.length > 0) {
+                    $scope.incorrectLogin = data.incorrectLogin[0];
+                }
+                if(data.incorrectPassword.length > 0) {
+                    $scope.incorrectPassword = data.incorrectPassword[0];
+                }
+                //$scope.error_message = data.message;
                 $rootScope.currentUser = 'Guest';
             }
         });
@@ -69,7 +81,6 @@ export default function($scope, $http, $rootScope, $state) {
                 if(data.incorrectEmail.length > 0) {
                     $scope.incorrectEmail = data.incorrectEmail[0];
                 }
-
             }
         });
     };
@@ -89,6 +100,8 @@ export default function($scope, $http, $rootScope, $state) {
         $scope.username = '';
         $scope.password = '';
         $scope.error_message = null;
+        $scope.incorrectLogin = null;
+        $scope.incorrectPassword = null;
     }
 
     $scope.signout = () => {
@@ -98,9 +111,5 @@ export default function($scope, $http, $rootScope, $state) {
         sessionStorage.clear();
         $state.go('auth');
     };
-
-/*    $scope.myProfileClick = () => {
-        $state.go('userProfile');
-    }*/
 
 }

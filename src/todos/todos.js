@@ -22,7 +22,20 @@ export default function($scope, $rootScope, $http, $q, itemFactory, taskFactory)
 	$scope.onCompletedClick = task => {
 		task.isCompleted = !task.isCompleted;
 		$scope.editingTask = task;
-		$scope.editTask(task);
+		if($scope.sharedItemActive) {
+			var itemPos = $rootScope.currentUser.sharedItems.indexOf($scope.activeItem);
+			var taskPos = $rootScope.currentUser.sharedItems[itemPos].subItems.indexOf(task);
+
+			$http.put(`/share/editTask/${$rootScope.currentUser._id}/${itemPos}/${taskPos}/${task.isCompleted}`)
+			.success(response => {
+				console.log(response);
+
+				$rootScope.currentUser.sharedItems[itemPos].subItems[taskPos].isCompleted = task.isCompleted;
+				sessionStorage.setItem('currentUser', JSON.stringify($rootScope.currentUser));
+	    	})
+		}
+		else
+			$scope.editTask(task);
 	};
 
 	$scope.onCreateNewItemClick = () => {
@@ -86,6 +99,76 @@ export default function($scope, $rootScope, $http, $q, itemFactory, taskFactory)
 	}
 
 
-	$scope.getItems();
+	//$scope.getItems();
+
+    getItemsSynchronously().then(function(data) {
+    	$rootScope.todos = data.todos;
+    	$rootScope.sharedItems = $rootScope.currentUser.sharedItems;
+
+ 	}, function() {
+	    console.log('unable to get the items');
+	  }
+	);
+
+	setTimeout(function() {											//заполняем subtusks
+		for(var i = 0; i < $rootScope.todos.length; i++) {
+			$scope.onItemClick($rootScope.todos[i]);
+		}
+		$scope.activeItem = null;
+	}, 500);
+
+
+
+	$scope.onShareItemClick = () => {
+		$scope.shareEmail = '';
+		$scope.shareError = null;
+	}
+
+	$scope.shareItem = () => {
+		if(!$scope.shareEmail || $scope.shareEmail === $rootScope.currentUser.email) {
+			$scope.shareError = "Please, enter user email";
+			return;
+		}
+
+		$http.get(`/share/findUser/${$scope.shareEmail}`).success(function(data){
+            console.log(data);
+            if(data.state == 'success'){
+
+        		$http.post(`/share/addItem/${data.user._id}`, $scope.activeItem).success(function(data) {
+					console.log(data);
+        		});
+               
+                 jQuery.noConflict();
+                (function ($) {
+                    $('#shareItemModal').modal('hide');
+                }
+                )(jQuery);
+
+            }
+            else{
+                if(data.shareError) {
+                    $scope.shareError = data.shareError;
+                }
+            }
+        });    
+	};
+
+	$scope.onSharedItemClick = item => {
+		$scope.activeItem = item;
+		$scope.sharedItemActive = true;
+	}
+
+	$scope.deleteSharedItem = item => {
+		var pos = $rootScope.currentUser.sharedItems.indexOf(item);
+		$rootScope.currentUser.sharedItems.splice(pos, 1);
+
+		$http.delete(`/share/deleteItem/${$rootScope.currentUser._id}/${item._id}`)
+			.success(response => {
+				console.log(response);
+	    })
+		$scope.activeItem = null;
+
+		sessionStorage.setItem('currentUser', JSON.stringify($rootScope.currentUser));
+	}
 
 }

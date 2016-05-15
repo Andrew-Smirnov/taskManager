@@ -36,11 +36,13 @@ passport.use('login', new LocalStrategy({
                     // Имя пользователя не существует, логируем ошибку и делаем перенаправление назад
                     if (!user){
                         console.log('User Not Found with username '+username);
+                        req.flash('incorrectLogin', 'User Not Found with login '+username);
                         return done(null, false);              
                     }
                     // Пользователь существует, но введен неверный пароль. Логируем ошибку 
                     if (!isValidPassword(user, password)){
                         console.log('Invalid Password');
+                        req.flash('incorrectPassword', 'Invalid Password ');
                         return done(null, false); // переадресация назад на страницу входа
                     }
                     // Имя пользователя и пароль верны, возвращаем пользователя через метод done

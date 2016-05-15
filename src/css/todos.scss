@@ -41,6 +41,14 @@
     	color: #F4C732;
 	}
 
+	&__panel .glyphicon-share{
+    	margin-left: 15px;
+	}
+
+	&__panel .glyphicon-share:hover{
+    	color: #8AE81B;
+	}
+
 	&__panel a{
 		font-size: 21px;
 	}

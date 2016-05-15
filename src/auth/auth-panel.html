@@ -8,16 +8,19 @@
 		        <span class="icon-bar"></span>
 		        <span class="icon-bar"></span>
 		      </button>
-		      <a class="navbar-brand" href="#">Task Manager</a>
+		      <a class="navbar-brand" href="#">Менеджер задач</a>
 		    </div>
 
 		    <!-- Collect the nav links, forms, and other content for toggling -->
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
 		      <ul class="nav navbar-nav navbar-right" ng-if="currentUser!='Guest'">
-            <li><span>Hello, {{currentUser.firstName}}</span></li>
-            <li>
+            <li><span>Приветствуем, {{currentUser.firstName}}</span></li>
+            <li ng-if="currentState == 'todos'">
               <a ui-sref="userProfile">My Profile</a>
+            </li>
+            <li ng-if="currentState == 'userProfile'">
+              <a ui-sref="todos">My ToDo List</a>
             </li>
 		        <li>
               <a href="#" ng-click="signout()">Log Out</a>
@@ -25,12 +28,12 @@
 		      </ul>
 
           <ul class="nav navbar-nav navbar-right" ng-if="currentUser==='Guest'">
-             <li><span>Hello, Guest</span></li>
+             <li><span>Приветствуем, Гость</span></li>
             <li>
-              <a href="#" data-toggle="modal" data-target="#registerModal" ng-click="onRegisterClick()">Register</a>
+              <a href="#" data-toggle="modal" data-target="#registerModal" ng-click="onRegisterClick()">Регистрация</a>
             </li>
             <li>
-              <a href="#" data-toggle="modal" data-target="#loginModal" ng-click="onLoginClick()">Log In</a>
+              <a href="#" data-toggle="modal" data-target="#loginModal" ng-click="onLoginClick()">Вход</a>
             </li>
           </ul>
 
@@ -45,21 +48,21 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="registerModalLabel">Register</h4>
+        <h4 class="modal-title" id="registerModalLabel">Регистрация нового пользователя</h4>
       </div>
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="first-name" class="control-label">First Name:</label>
+            <label for="first-name" class="control-label">Имя:</label>
             <input type="text" class="form-control" id="first-name" ng-model="firstName">
           </div>
           <div class="form-group">
-            <label for="user-login" class="control-label">Login:</label>
+            <label for="user-login" class="control-label">Логин:</label>
             <input type="text" class="form-control" id="user-login" ng-model="username">
           </div>
           <div class="alert alert-danger" role="alert" ng-show="incorrectLogin">{{incorrectLogin}}</div>
           <div class="form-group">
-            <label for="user-password" class="control-label">Password:</label>
+            <label for="user-password" class="control-label">Пароль:</label>
             <input type="text" class="form-control" id="user-password" ng-model="password">
           </div>
           <div class="form-group">
@@ -70,8 +73,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" ng-click="register()">Create Account</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-primary" ng-click="register()">Создать аккаунт</button>
       </div>
     </div>
   </div>
@@ -83,22 +86,24 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="registerModalLabel">Log In</h4>
+        <h4 class="modal-title" id="registerModalLabel">Логин</h4>
       </div>
       <div class="modal-body">
         <form ng-submit="login()">
           <div class="form-group">
-            <label for="user-login" class="control-label">Login:</label>
+            <label for="user-login" class="control-label">Логин:</label>
             <input type="text" class="form-control" id="user-login" ng-model="username">
           </div>
+          <div class="alert alert-danger" role="alert" ng-show="incorrectLogin">{{incorrectLogin}}</div>
           <div class="form-group">
-            <label for="user-password" class="control-label">Password:</label>
+            <label for="user-password" class="control-label">Пароль:</label>
             <input type="text" class="form-control" id="user-password" ng-model="password">
           </div>
-          <div class="alert alert-danger" role="alert" ng-show="error_message">Invalid username or password</div>
+          <div class="alert alert-danger" role="alert" ng-show="incorrectPassword">{{incorrectPassword}}</div>
+          <div class="alert alert-danger" role="alert" ng-show="error_message">Неправильные логин или пароль</div>
           <div class="modal-footer">
-            <button  class="btn btn-default" data-dismiss="modal">Close</button>
-            <button  class="btn btn-primary">Log In</button>
+            <button  class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            <button  class="btn btn-primary">Войти</button>
           </div>
         </form>
       </div>
